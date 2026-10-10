@@ -1,0 +1,1043 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ذاكرلي فلسفة - أول 7 دروس</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;900&display=swap');
+  
+  * {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Cairo', sans-serif;
+  }
+  
+  body {
+    background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+    min-height: 100vh;
+    color: #fff;
+    overflow-x: hidden;
+  }
+  
+  /* شاشة البداية */
+  #startScreen {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    text-align: center;
+    padding: 20px;
+  }
+  
+  #startScreen h1 {
+    font-size: 2.5rem;
+    background: linear-gradient(45deg, #f7971e, #ffd200);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 15px;
+  }
+  
+  #startScreen p {
+    font-size: 1.2rem;
+    color: #ccc;
+    margin-bottom: 10px;
+    max-width: 600px;
+    line-height: 1.8;
+  }
+  
+  .btn {
+    background: linear-gradient(45deg, #f7971e, #ffd200);
+    color: #1a1a2e;
+    border: none;
+    padding: 15px 45px;
+    font-size: 1.3rem;
+    font-weight: 700;
+    border-radius: 50px;
+    cursor: pointer;
+    margin-top: 20px;
+    transition: all 0.3s;
+    font-family: 'Cairo', sans-serif;
+  }
+  
+  .btn:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 30px rgba(255,210,0,0.5);
+  }
+  
+  .btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+  }
+  
+  /* شاشة المذاكرة */
+  #studyScreen {
+    display: none;
+    padding: 20px;
+    max-width: 900px;
+    margin: 0 auto;
+    padding-bottom: 100px;
+  }
+  
+  #timerBar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: #1a1a2e;
+    padding: 12px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 100;
+    border-bottom: 2px solid #f7971e;
+  }
+  
+  #timerDisplay {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #ffd200;
+  }
+  
+  #progressDisplay {
+    font-size: 1rem;
+    color: #aaa;
+  }
+  
+  .lesson-card {
+    background: rgba(255,255,255,0.07);
+    border-radius: 15px;
+    padding: 20px;
+    margin-top: 70px;
+    margin-bottom: 20px;
+    border-right: 4px solid #f7971e;
+  }
+  
+  .lesson-card h2 {
+    color: #ffd200;
+    margin-bottom: 15px;
+    font-size: 1.4rem;
+  }
+  
+  .lesson-card h3 {
+    color: #f7971e;
+    margin: 15px 0 8px;
+    font-size: 1.1rem;
+  }
+  
+  .lesson-card ul {
+    list-style: none;
+    padding-right: 10px;
+  }
+  
+  .lesson-card ul li {
+    padding: 6px 0;
+    padding-right: 20px;
+    position: relative;
+    line-height: 1.6;
+    color: #ddd;
+  }
+  
+  .lesson-card ul li::before {
+    content: '◈';
+    position: absolute;
+    right: 0;
+    color: #f7971e;
+  }
+  
+  .highlight {
+    background: rgba(247,151,30,0.2);
+    padding: 2px 8px;
+    border-radius: 5px;
+    color: #ffd200;
+    font-weight: 600;
+  }
+  
+  .example-box {
+    background: rgba(247,151,30,0.1);
+    border-radius: 10px;
+    padding: 12px;
+    margin: 10px 0;
+    border-right: 3px solid #ffd200;
+  }
+  
+  .example-box strong {
+    color: #ffd200;
+  }
+  
+  /* شاشة الامتحان */
+  #examScreen {
+    display: none;
+    padding: 20px;
+    max-width: 800px;
+    margin: 0 auto;
+    padding-bottom: 100px;
+  }
+  
+  #examTimer {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    background: #1a1a2e;
+    padding: 12px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 100;
+    border-bottom: 2px solid #e74c3c;
+  }
+  
+  #examTimerDisplay {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #e74c3c;
+  }
+  
+  .question-card {
+    background: rgba(255,255,255,0.07);
+    border-radius: 15px;
+    padding: 20px;
+    margin-top: 20px;
+    border-right: 4px solid #3498db;
+  }
+  
+  .question-card .q-num {
+    color: #3498db;
+    font-weight: 700;
+    margin-bottom: 8px;
+  }
+  
+  .question-card .q-text {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    margin-bottom: 15px;
+    color: #eee;
+  }
+  
+  .option {
+    display: block;
+    background: rgba(255,255,255,0.05);
+    border: 2px solid rgba(255,255,255,0.1);
+    border-radius: 10px;
+    padding: 12px 15px;
+    margin: 8px 0;
+    cursor: pointer;
+    transition: all 0.2s;
+    color: #ddd;
+    font-size: 1rem;
+    width: 100%;
+    text-align: right;
+    font-family: 'Cairo', sans-serif;
+  }
+  
+  .option:hover {
+    background: rgba(255,255,255,0.1);
+    border-color: #3498db;
+  }
+  
+  .option.selected {
+    background: rgba(52,152,219,0.3);
+    border-color: #3498db;
+    color: #fff;
+  }
+  
+  /* شاشة النتيجة */
+  #resultScreen {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    text-align: center;
+    padding: 20px;
+  }
+  
+  #resultScreen h1 {
+    font-size: 3rem;
+    margin-bottom: 15px;
+  }
+  
+  .pass { color: #2ecc71; }
+  .fail { color: #e74c3c; }
+  
+  #resultScreen .score {
+    font-size: 5rem;
+    font-weight: 900;
+    background: linear-gradient(45deg, #f7971e, #ffd200);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin: 10px 0;
+  }
+  
+  #resultScreen p {
+    font-size: 1.2rem;
+    color: #ccc;
+    margin: 8px 0;
+    max-width: 600px;
+    line-height: 1.8;
+  }
+  
+  /* الهدية */
+  #rewardScreen {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
+    text-align: center;
+    padding: 20px;
+    background: radial-gradient(circle at center, #1a1a2e, #0f0c29);
+  }
+  
+  #rewardScreen h1 {
+    font-size: 3rem;
+    background: linear-gradient(45deg, #f7971e, #ffd200, #f7971e);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    margin-bottom: 20px;
+    animation: glow 2s infinite alternate;
+  }
+  
+  @keyframes glow {
+    from { filter: drop-shadow(0 0 10px rgba(255,210,0,0.3)); }
+    to { filter: drop-shadow(0 0 30px rgba(255,210,0,0.8)); }
+  }
+  
+  .certificate {
+    background: linear-gradient(135deg, #1a1a2e, #302b63);
+    border: 3px solid #f7971e;
+    border-radius: 20px;
+    padding: 40px 30px;
+    max-width: 600px;
+    margin: 20px auto;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .certificate::before {
+    content: '🏆';
+    position: absolute;
+    top: 10px;
+    left: 15px;
+    font-size: 3rem;
+    opacity: 0.3;
+  }
+  
+  .certificate h2 {
+    color: #ffd200;
+    font-size: 1.8rem;
+    margin-bottom: 15px;
+  }
+  
+  .certificate .name {
+    font-size: 2rem;
+    color: #f7971e;
+    font-weight: 900;
+    margin: 15px 0;
+    border-bottom: 2px dashed #f7971e;
+    padding-bottom: 10px;
+    display: inline-block;
+  }
+  
+  .certificate .text {
+    color: #ccc;
+    font-size: 1.1rem;
+    line-height: 2;
+    margin: 15px 0;
+  }
+  
+  .badge-container {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-top: 20px;
+    flex-wrap: wrap;
+  }
+  
+  .badge {
+    background: rgba(247,151,30,0.15);
+    border: 2px solid #f7971e;
+    border-radius: 50px;
+    padding: 8px 20px;
+    color: #ffd200;
+    font-weight: 700;
+    font-size: 0.9rem;
+  }
+  
+  .confetti {
+    position: fixed;
+    width: 10px;
+    height: 10px;
+    background: #ffd200;
+    animation: fall linear forwards;
+    z-index: 999;
+  }
+  
+  @keyframes fall {
+    to { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+  }
+  
+  .hidden { display: none !important; }
+  
+  .nav-buttons {
+    display: flex;
+    gap: 10px;
+    margin-top: 20px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  
+  .btn-sm {
+    padding: 10px 25px;
+    font-size: 1rem;
+    border-radius: 30px;
+    border: none;
+    cursor: pointer;
+    font-family: 'Cairo', sans-serif;
+    font-weight: 700;
+  }
+  
+  .btn-primary {
+    background: linear-gradient(45deg, #f7971e, #ffd200);
+    color: #1a1a2e;
+  }
+  
+  .btn-danger {
+    background: linear-gradient(45deg, #e74c3c, #c0392b);
+    color: #fff;
+  }
+  
+  /* شريط التقدم */
+  .progress-bar {
+    width: 100%;
+    height: 8px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 10px;
+    margin: 10px 0;
+    overflow: hidden;
+  }
+  
+  .progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #f7971e, #ffd200);
+    border-radius: 10px;
+    transition: width 0.3s;
+  }
+  
+  @media (max-width: 600px) {
+    #startScreen h1 { font-size: 1.8rem; }
+    .lesson-card h2 { font-size: 1.2rem; }
+    #resultScreen h1 { font-size: 2rem; }
+    #resultScreen .score { font-size: 3.5rem; }
+    .certificate h2 { font-size: 1.4rem; }
+    .certificate .name { font-size: 1.5rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- شاشة البداية -->
+<div id="startScreen">
+  <h1>📚 ذاكرلي فلسفة</h1>
+  <p>أول 7 دروس — الوحدة الأولى والثانية</p>
+  <p style="font-size: 0.95rem; color: #f7971e;">⏱️ معاك 30 دقيقة مذاكرة بس.. بعدها الامتحان يقفل عليك تلقائي!</p>
+  <p style="font-size: 0.95rem; color: #e74c3c;">🎯 لازم تجيب 17 من 25 علشان تنجح</p>
+  <button class="btn" onclick="startStudy()">يلا نبدأ 🚀</button>
+</div>
+
+<!-- شاشة المذاكرة -->
+<div id="studyScreen">
+  <div id="timerBar">
+    <span id="timerDisplay">30:00</span>
+    <span id="progressDisplay">📖 جاري المذاكرة</span>
+  </div>
+  
+  <div id="lessonsContainer"></div>
+  
+  <div class="nav-buttons">
+    <button class="btn btn-primary" onclick="startExam()" id="examBtn">📝 ابدأ الامتحان</button>
+  </div>
+</div>
+
+<!-- شاشة الامتحان -->
+<div id="examScreen">
+  <div id="examTimer">
+    <span id="examTimerDisplay">25:00</span>
+    <span style="color:#aaa;">📝 الامتحان</span>
+  </div>
+  <div id="questionsContainer"></div>
+  <div class="nav-buttons">
+    <button class="btn btn-danger" onclick="submitExam()" id="submitBtn">✅ تسليم الامتحان</button>
+  </div>
+</div>
+
+<!-- شاشة النتيجة -->
+<div id="resultScreen">
+  <h1 id="resultTitle"></h1>
+  <div class="score" id="resultScore"></div>
+  <p id="resultMsg"></p>
+  <div class="nav-buttons" id="resultButtons"></div>
+</div>
+
+<!-- شاشة الهدية -->
+<div id="rewardScreen">
+  <h1>🎉 مبروك يا وحش! 🎉</h1>
+  <div class="certificate">
+    <h2>🏆 شهادة إتقان الفلسفة</h2>
+    <div class="name">البطل المجهول</div>
+    <p class="text">أتممت بنجاح مذاكرة أول 7 دروس في الفلسفة والمنطق<br>وحققت درجة النجاح بجدارة!</p>
+    <div class="badge-container">
+      <span class="badge">🧠 مفكر نقدي</span>
+      <span class="badge">📖 دارس فلسفة</span>
+      <span class="badge">⭐ مستوى متقدم</span>
+    </div>
+  </div>
+  <p style="color:#aaa; margin-top:20px;">كمّل باقي المنهج يا بطل 💪</p>
+  <button class="btn" onclick="location.reload()" style="margin-top:20px;">🔄 إعادة من الأول</button>
+</div>
+
+<script>
+// ====== بيانات الدروس ======
+const lessons = [
+  {
+    title: "الدرس 1: معنى التفكير الإنساني وتطبيقاته",
+    content: `
+      <h3>تعريف التفكير</h3>
+      <ul>
+        <li><span class="highlight">مجموعة العمليات العقلية الراقية</span> التي يقوم بها الإنسان مستهدفًا حل مشكلة أو تفسير موقف غامض أو مواجهة ظروف الحياة.</li>
+        <li>التفكير <span class="highlight">تلقائي وفطري</span> ودائم التطور.</li>
+        <li>الإنسان عُرف بأنه <span class="highlight">"المفكر"</span> لأن الحضارات دليل على تطور تفكيره.</li>
+      </ul>
+      <h3>الحالات التي تثير النشاط العقلي</h3>
+      <ul>
+        <li><span class="highlight">تنظيم التفكير:</span> ترتيب الأفكار والمعلومات في نسق مترابط.</li>
+        <li><span class="highlight">تذكر الماضي:</span> استدعاء الخبرات المخزونة وقت الاحتياج.</li>
+        <li><span class="highlight">التخطيط للمستقبل:</span> رسم تصور للمستقبل لتحقيق أهداف محددة.</li>
+        <li><span class="highlight">حل المشكلات:</span> استخدام المهارات للتعامل مع العقبات.</li>
+      </ul>
+      <div class="example-box">
+        <strong>مثال:</strong> الطالب اللي بيذاكر ويخطط ويتذكر ويحل مشكلات الامتحان — ده تطبيق عملي لكل الحالات.
+      </div>
+    `
+  },
+  {
+    title: "الدرس 2: أهمية التفكير الإنساني",
+    content: `
+      <h3>أهمية التفكير</h3>
+      <ul>
+        <li><span class="highlight">المنفعة العملية للفرد:</span> تحقيق النجاح والتميز والتنافس.</li>
+        <li><span class="highlight">المنفعة العامة:</span> النفع للمجتمع والجماعة.</li>
+        <li><span class="highlight">الصحة النفسية:</span> التكيف مع الأحداث والتغيرات.</li>
+        <li><span class="highlight">القدرة على التحليل والتقويم والنقد:</span> نقد الأفكار وتقديم المبررات.</li>
+      </ul>
+      <div class="example-box">
+        <strong>الفرق:</strong> المنفعة العملية = للفرد فقط (خاصة). المنفعة العامة = للمجتمع (عامة).
+      </div>
+    `
+  },
+  {
+    title: "الدرس 3: أساليب التفكير الإنساني",
+    content: `
+      <h3>أساليب التفكير</h3>
+      <ul>
+        <li><span class="highlight">الأسلوب الخرافي:</span> بدائي ساذج، غير منطقي، لا علاقة له بالواقع (مثال: الاعتقاد أن القط له 7 أرواح).</li>
+        <li><span class="highlight">الأسلوب الديني:</span> إيماني عقائدي، يربط الأحداث بالقدرة الإلهية (مثال: نزول المطر رحمة من الله).</li>
+        <li><span class="highlight">الأسلوب الفلسفي:</span> تأملي عقلي شامل، يبحث عن العلل البعيدة والحقيقة الكلية (مثال: تأمل طاليس أن الماء أصل الوجود).</li>
+        <li><span class="highlight">الأسلوب العلمي:</span> مادي حسي جزئي، يعتمد على الملاحظة والتجربة والعلل المباشرة (مثال: تفسير قوس قزح بانكسار الضوء).</li>
+      </ul>
+    `
+  },
+  {
+    title: "الدرس 4: الفلسفة والدين والعلم",
+    content: `
+      <h3>الفلسفة والدين</h3>
+      <ul>
+        <li>لا يوجد تعارض — كلاهما يهدف لإدراك الحقيقة.</li>
+        <li>الفلسفة: تعتمد على العقل، معارفها نسبية.</li>
+        <li>الدين: يعتمد على الوحي، حقائقه مطلقة.</li>
+        <li>يتفقان في: الموضوع (قضايا الإنسان)، الهدف (إدراك الحقيقة)، المنهج (استخدام العقل).</li>
+      </ul>
+      <h3>الفلسفة والعلم</h3>
+      <ul>
+        <li>الفلسفة: كلية، معنوية، مجردة، عقلية تأملية.</li>
+        <li>العلم: جزئي، مادي، حسي، تجريبي.</li>
+        <li>التكامل: الفلسفة تتناول الجانب المعنوي والعلم الجانب المادي.</li>
+      </ul>
+      <div class="example-box">
+        <strong>مثال:</strong> ابن رشد — فصل المقال — وضّح أنه لا تعارض بين الحكمة والشريعة.
+      </div>
+    `
+  },
+  {
+    title: "الدرس 5: التفكير الناقد والتفكير الإبداعي",
+    content: `
+      <h3>التفكير الناقد</h3>
+      <ul>
+        <li>قدرة الفرد على تحليل المعارف وتمييز الصحيح من الخاطئ.</li>
+        <li><span class="highlight">خطواته:</span> جمع المعلومات ← تحليل البيانات ← إصدار الأحكام ← مراجعة النتائج.</li>
+        <li><span class="highlight">مهاراته:</span> التفسير، الاستنتاج، التقويم.</li>
+        <li>أهميته: أساس الانفتاح العقلي والاستقلالية في اتخاذ القرار.</li>
+      </ul>
+      <h3>التفكير الإبداعي</h3>
+      <ul>
+        <li>قدرة الفرد على إنتاج حلول أصلية وتجديد الأفكار بشكل غير تقليدي.</li>
+        <li><span class="highlight">خطواته:</span> الإعداد ← الاحتضان ← الإشراق ← التحقق.</li>
+        <li><span class="highlight">مهاراته:</span> الطلاقة، المرونة، الأصالة.</li>
+      </ul>
+    `
+  },
+  {
+    title: "الدرس 6: المفهوم والماصدق",
+    content: `
+      <h3>المفهوم</h3>
+      <ul>
+        <li><span class="highlight">الصفات أو المعاني</span> التي يفهمها الإنسان من اللفظ عند سماعه.</li>
+        <li>هو الصورة الذهنية الكلية المجردة.</li>
+      </ul>
+      <h3>الماصدق</h3>
+      <ul>
+        <li><span class="highlight">الأفراد أو الأشياء</span> التي يصدق وينطبق عليها المفهوم في الواقع.</li>
+      </ul>
+      <h3>العلاقة بينهما</h3>
+      <ul>
+        <li>علاقة <span class="highlight">عكسية</span>: كلما زاد المفهوم قلّت الماصدقات والعكس.</li>
+        <li>لكنها ليست عكسية دائمًا (الصفات غير المؤثرة لا تغير الماصدقات).</li>
+      </ul>
+      <div class="example-box">
+        <strong>مثال:</strong> "إنسان" مفهومه: كائن حي عاقل. ماصدقاته: كل أفراد الإنسان.
+      </div>
+    `
+  },
+  {
+    title: "الدرس 7: الكليات الخمس",
+    content: `
+      <h3>الكليات الخمس</h3>
+      <ul>
+        <li><span class="highlight">الجنس:</span> حد كلي يطلق على عدة أنواع (مثال: حيوان).</li>
+        <li><span class="highlight">النوع:</span> حد كلي يطلق على عدة أفراد (مثال: إنسان).</li>
+        <li><span class="highlight">الفصل:</span> صفة جوهرية مميزة للنوع (مثال: ناطق).</li>
+        <li><span class="highlight">الخاصة:</span> صفة غير جوهرية مميزة (مثال: كاتب).</li>
+        <li><span class="highlight">العرض العام:</span> صفة شائعة غير مميزة (مثال: ماشي).</li>
+      </ul>
+      <div class="example-box">
+        <strong>العلاقة:</strong> الجنس أعم من النوع — النوع أخص من الجنس. العلاقة نسبية متغيرة.
+      </div>
+    `
+  }
+];
+
+// ====== بنك الأسئلة ======
+const questions = [
+  {
+    q: "مجموعة العمليات العقلية الراقية التي يقوم بها الإنسان مستهدفًا حل مشكلة أو تفسير موقف غامض هي:",
+    options: ["التفكير", "الإدراك", "الانتباه", "التذكر"],
+    correct: 0
+  },
+  {
+    q: "وضع الطالب جدولًا للمذاكرة بهدف التفوق يعد تجسيدًا لـ:",
+    options: ["تذكر الماضي", "تنظيم التفكير", "حل المشكلات", "التخطيط للمستقبل"],
+    correct: 3
+  },
+  {
+    q: "استدعاء رقم هاتف والدك من الذاكرة يعد مثالًا على:",
+    options: ["تنظيم التفكير", "تذكر الماضي", "حل المشكلات", "التخطيط للمستقبل"],
+    correct: 1
+  },
+  {
+    q: "قيام الحكومة بوضع رؤية شاملة لمصر بحلول 2030م يعد مثالًا على:",
+    options: ["تذكر الماضي", "تنظيم التفكير", "التخطيط للمستقبل", "حل المشكلات"],
+    correct: 2
+  },
+  {
+    q: "قيام الدولة ببناء الكباري لحل مشكلة التكدس المروري يعد مثالًا على:",
+    options: ["تذكر الماضي", "تنظيم التفكير", "التخطيط للمستقبل", "حل المشكلات"],
+    correct: 3
+  },
+  {
+    q: "التفكير الذي يهدف لتحقيق النفع والفائدة للشخص فقط يسمى:",
+    options: ["المنفعة العامة", "المنفعة العملية للفرد", "الصحة النفسية", "القدرة على النقد"],
+    correct: 1
+  },
+  {
+    q: "قيام مدير المصنع بتوفير وسائل مواصلات للعمال لحل مشكلة التأخر يعد مثالًا على:",
+    options: ["المنفعة العملية", "المنفعة العامة", "الصحة النفسية", "القدرة على النقد"],
+    correct: 1
+  },
+  {
+    q: "قدرة الفرد على التكيف مع الأحداث والتغيرات الحالية تسمى:",
+    options: ["المنفعة العملية", "المنفعة العامة", "الصحة النفسية", "القدرة على النقد"],
+    correct: 2
+  },
+  {
+    q: "رفض سقراط لوجهة نظر السوفسطائيين وتقديم الأدلة يعد مثالًا على:",
+    options: ["المنفعة العملية", "المنفعة العامة", "الصحة النفسية", "القدرة على التحليل والنقد"],
+    correct: 3
+  },
+  {
+    q: "الأسلوب الذي يعتمد على تعليلات غيبية ساذجة وغير منطقية هو:",
+    options: ["الأسلوب العلمي", "الأسلوب الفلسفي", "الأسلوب الديني", "الأسلوب الخرافي"],
+    correct: 3
+  },
+  {
+    q: "تفسير نزول المطر بأنه رحمة من الله يمثل الأسلوب:",
+    options: ["الخرافي", "الديني", "الفلسفي", "العلمي"],
+    correct: 1
+  },
+  {
+    q: "تأمل طاليس أن الماء هو المادة الأولى للكون يمثل الأسلوب:",
+    options: ["الخرافي", "الديني", "الفلسفي", "العلمي"],
+    correct: 2
+  },
+  {
+    q: "تفسير قوس قزح بانكسار ضوء الشمس يمثل الأسلوب:",
+    options: ["الخرافي", "الديني", "الفلسفي", "العلمي"],
+    correct: 3
+  },
+  {
+    q: "العلاقة بين الفلسفة والدين علاقة:",
+    options: ["صراع", "تناقض", "توافق", "تضاد"],
+    correct: 2
+  },
+  {
+    q: "الفلسفة تختلف عن العلم في أن الفلسفة:",
+    options: ["جزئية مادية", "كلية معنوية مجردة", "تجريبية حسية", "تبحث عن العلل المباشرة"],
+    correct: 1
+  },
+  {
+    q: "العلم يختلف عن الفلسفة في أنه:",
+    options: ["كلي معنوي", "يستخدم التأمل العقلي", "جزئي مادي حسي", "يبحث عن العلل البعيدة"],
+    correct: 2
+  },
+  {
+    q: "من خطوات التفكير الناقد:",
+    options: ["الإعداد ← الاحتضان ← الإشراق", "جمع المعلومات ← التحليل ← إصدار الأحكام", "الطلاقة ← المرونة ← الأصالة", "التذكر ← التنظيم ← التخطيط"],
+    correct: 1
+  },
+  {
+    q: "من مهارات التفكير الإبداعي:",
+    options: ["التفسير", "الاستنتاج", "التقويم", "الطلاقة"],
+    correct: 3
+  },
+  {
+    q: "مهارة رد الظواهر والأحداث إلى أسبابها الحقيقية تسمى:",
+    options: ["الاستنتاج", "التفسير", "التقويم", "الطلاقة"],
+    correct: 1
+  },
+  {
+    q: "مهارة التوصل إلى النتائج من خلال المقدمات تسمى:",
+    options: ["التفسير", "الاستنتاج", "التقويم", "الأصالة"],
+    correct: 1
+  },
+  {
+    q: "الصفات أو المعاني التي يفهمها الإنسان من اللفظ تسمى:",
+    options: ["الماصدق", "المفهوم", "القضية", "الحد"],
+    correct: 1
+  },
+  {
+    q: "الأفراد أو الأشياء التي ينطبق عليها المفهوم في الواقع تسمى:",
+        options: ["المفهوم", "الماصدق", "الحد", "القضية"],
+    correct: 1
+  },
+  {
+    q: "العلاقة بين المفهوم والماصدق علاقة:",
+    options: ["طردية دائمًا", "عكسية دائمًا", "عكسية وليست دائمًا", "لا توجد علاقة"],
+    correct: 2
+  },
+  {
+    q: "حد كلي يطلق على عدة أنواع تجمعها صفات مشتركة هو:",
+    options: ["النوع", "الجنس", "الفصل", "الخاصة"],
+    correct: 1
+  },
+  {
+    q: "صفة جوهرية تميز النوع عن غيره تسمى:",
+    options: ["العرض العام", "الخاصة", "الفصل", "الجنس"],
+    correct: 2
+  },
+  {
+    q: "صفة غير جوهرية مميزة للنوع تسمى:",
+    options: ["الجنس", "الفصل", "العرض العام", "الخاصة"],
+    correct: 3
+  },
+  {
+    q: "صفة شائعة غير مميزة توجد في أكثر من نوع تسمى:",
+    options: ["الخاصة", "الفصل", "العرض العام", "الجنس"],
+    correct: 2
+  },
+  {
+    q: "القضية المنطقية هي:",
+    options: [
+      "جملة إنشائية لا يمكن الحكم عليها",
+      "جملة خبرية يمكن الحكم عليها بالصدق أو الكذب",
+      "جملة أمر أو نهي",
+      "جملة تمني أو تعجب"
+    ],
+    correct: 1
+  },
+  {
+    q: "أي من العبارات التالية لا تعد قضية منطقية؟",
+    options: [
+      "أحمد زويل مكتشف الفيمتوثانية",
+      "السماء تمطر",
+      "أغلق الباب",
+      "أحمد طالب مجتهد"
+    ],
+    correct: 2
+  },
+  {
+    q: "القضية البسيطة تتكون من:",
+    options: [
+      "موضوع ومحمول ورابطة",
+      "قضيتين بسيطتين ورابط قضوي",
+      "موضوع فقط",
+      "محمول ورابطة فقط"
+    ],
+    correct: 0
+  },
+  {
+    q: "القضية 'كل المصريين أحرار' تصنف كقضية:",
+    options: ["جزئية موجبة", "كلية سالبة", "كلية موجبة", "جزئية سالبة"],
+    correct: 2
+  },
+  {
+    q: "القضية 'بعض الطلاب ليسوا مجتهدين' تصنف كقضية:",
+    options: ["كلية موجبة", "جزئية سالبة", "كلية سالبة", "جزئية موجبة"],
+    correct: 1
+  },
+  {
+    q: "في القضية الكلية الموجبة، الحد المستغرق هو:",
+    options: ["الموضوع فقط", "المحمول فقط", "الموضوع والمحمول", "لا يوجد حد مستغرق"],
+    correct: 0
+  },
+  {
+    q: "في القضية الجزئية السالبة، الحد المستغرق هو:",
+    options: ["الموضوع فقط", "المحمول فقط", "الموضوع والمحمول", "لا يوجد حد مستغرق"],
+    correct: 1
+  },
+  {
+    q: "الرابط القضوي 'و' يسمى رابط:",
+    options: ["الفصل", "النفي", "الوصل", "الشرط"],
+    correct: 2
+  },
+  {
+    q: "الرابط القضوي 'إذا... فإن' يسمى رابط:",
+    options: ["الوصل", "الفصل", "الشرط", "النفي"],
+    correct: 2
+  },
+  {
+    q: "القضية التي محمولها يضيف خبرًا جديدًا من الواقع تسمى:",
+    options: ["تحليلية", "تركيبية", "شرطية", "عطفية"],
+    correct: 1
+  },
+  {
+    q: "القضية 'الإنسان حيوان مفكر' تصنف كقضية:",
+    options: ["تركيبية", "تحليلية", "شرطية", "مركبة"],
+    correct: 1
+  }
+];
+
+// ====== المتغيرات ======
+let studyTimeLeft = 30 * 60; // 30 دقيقة
+let examTimeLeft = 25 * 60; // 25 دقيقة
+let studyTimerInterval, examTimerInterval;
+let userAnswers = {};
+let currentScreen = 'start';
+
+// ====== دوال المذاكرة ======
+function startStudy() {
+  document.getElementById('startScreen').style.display = 'none';
+  document.getElementById('studyScreen').style.display = 'block';
+  currentScreen = 'study';
+  
+  // عرض الدروس
+  const container = document.getElementById('lessonsContainer');
+  container.innerHTML = '';
+  lessons.forEach((lesson, i) => {
+    const card = document.createElement('div');
+    card.className = 'lesson-card';
+    card.innerHTML = `<h2>${lesson.title}</h2>${lesson.content}`;
+    container.appendChild(card);
+  });
+  
+  // بدء العداد
+  studyTimerInterval = setInterval(() => {
+    studyTimeLeft--;
+    updateTimerDisplay();
+    if (studyTimeLeft <= 0) {
+      clearInterval(studyTimerInterval);
+      startExam(true);
+    }
+  }, 1000);
+  
+  updateTimerDisplay();
+  window.scrollTo(0, 0);
+}
+
+function updateTimerDisplay() {
+  const min = Math.floor(studyTimeLeft / 60);
+  const sec = studyTimeLeft % 60;
+  document.getElementById('timerDisplay').textContent = 
+    `${String(min).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
+  
+  if (studyTimeLeft <= 300) {
+    document.getElementById('timerDisplay').style.color = '#e74c3c';
+  }
+}
+
+// ====== دوال الامتحان ======
+function startExam(auto = false) {
+  clearInterval(studyTimerInterval);
+  document.getElementById('studyScreen').style.display = 'none';
+  document.getElementById('examScreen').style.display = 'block';
+  currentScreen = 'exam';
+  userAnswers = {};
+  examTimeLeft = 25 * 60;
+  
+  // عرض الأسئلة
+  const container = document.getElementById('questionsContainer');
+  container.innerHTML = '';
+  questions.forEach((q, i) => {
+    const card = document.createElement('div');
+    card.className = 'question-card';
+    card.innerHTML = `
+      <div class="q-num">السؤال ${i + 1} من ${questions.length}</div>
+      <div class="q-text">${q.q}</div>
+      <div class="options">
+        ${q.options.map((opt, j) => 
+          `<button class="option" onclick="selectAnswer(${i}, ${j}, this)">${opt}</button>`
+        ).join('')}
+      </div>
+    `;
+    container.appendChild(card);
+  });
+  
+  // بدء عداد الامتحان
+  examTimerInterval = setInterval(() => {
+    examTimeLeft--;
+    updateExamTimerDisplay();
+    if (examTimeLeft <= 0) {
+      clearInterval(examTimerInterval);
+      submitExam();
+    }
+  }, 1000);
+  
+  updateExamTimerDisplay();
+  
+  if (auto) {
+    alert('⏰ انتهى وقت المذاكرة! يلا ندخل الامتحان.');
+  }
+  
+  window.scrollTo(0, 0);
+}
+
+function updateExamTimerDisplay() {
+  const min = Math.floor(examTimeLeft / 60);
+  const sec = examTimeLeft % 60;
+  document.getElementById('examTimerDisplay').textContent = 
+    `${String(min).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
+  
+  if (examTimeLeft <= 120) {
+    document.getElementById('examTimerDisplay').style.color = '#ff0000';
+  }
+}
+
+function selectAnswer(qIndex, optIndex, btn) {
+  userAnswers[qIndex] = optIndex;
+  const parent = btn.parentElement;
+  parent.querySelectorAll('.option').forEach(o => o.classList.remove('selected'));
+  btn.classList.add('selected');
+}
+
+function submitExam() {
+  clearInterval(examTimerInterval);
+  
+  let score = 0;
+  questions.forEach((q, i) => {
+    if (userAnswers[i] === q.correct) score++;
+  });
+  
+  const passed = score >= 17;
+  
+  document.getElementById('examScreen').style.display = 'none';
+  document.getElementById('resultScreen').style.display = 'flex';
+  
+  const title = document.getElementById('resultTitle');
+  const scoreEl = document.getElementById('resultScore');
+  const msg = document.getElementById('resultMsg');
+  const buttons = document.getElementById('resultButtons');
+  
+  scoreEl.textContent = `${score} / ${questions.length}`;
+  
+  if (passed) {
+    title.textContent = '🎉 عاش يا وحش!';
+    title.className = 'pass';
+    msg.textContent = 'مبروك! عديت الامتحان بجدارة. جاهز للهدية؟';
+    buttons.innerHTML = `<button class="btn btn-primary" onclick="showReward()">🎁 استلم هديتك</button>`;
+  } else {
+    title.textContent = '😢 للأسف..';
+    title.className = 'fail';
+    msg.textContent = `جبت ${score} من ${questions.length}. محتاج 17 على الأقل علشان تنجح. حاول تاني!`;
+    buttons.innerHTML = `<button class="btn btn-primary" onclick="location.reload()">🔄 حاول مرة تانية</button>`;
+  }
+  
+  window.scrollTo(0, 0);
+}
+
+// ====== الهدية ======
+function showReward() {
+  document.getElementById('resultScreen').style.display = 'none';
+  document.getElementById('rewardScreen').style.display = 'flex';
+  currentScreen = 'reward';
+  
+  // إطلاق الكونفيتي
+  for (let i = 0; i < 120; i++) {
+    setTimeout(() => {
+      const conf = document.createElement('div');
+      conf.className = 'confetti';
+      conf.style.left = Math.random() * 100 + 'vw';
+      conf.style.top = '-10px';
+      conf.style.background = ['#ffd200','#f7971e','#2ecc71','#3498db','#e74c3c','#9b59b6'][Math.floor(Math.random()*6)];
+      conf.style.width = (Math.random() * 10 + 5) + 'px';
+      conf.style.height = conf.style.width;
+      conf.style.borderRadius = Math.random() > 0.5 ? '50%' : '0';
+      conf.style.animationDuration = (Math.random() * 3 + 2) + 's';
+      document.body.appendChild(conf);
+      setTimeout(() => conf.remove(), 6000);
+    }, i * 40);
+  }
+  
+  window.scrollTo(0, 0);
+}
+
+// ====== منع الغش ======
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden && (currentScreen === 'study' || currentScreen === 'exam')) {
+    console.log('⚠️ خرجت من الصفحة!');
+  }
+});
+
+// منع النسخ واللصق
+document.addEventListener('copy', e => e.preventDefault());
+document.addEventListener('cut', e => e.preventDefault());
+document.addEventListener('contextmenu', e => e.preventDefault());
+
+// منع الرجوع
+history.pushState(null, null, location.href);
+window.onpopstate = function() {
+  history.go(1);
+};
+
+// تحذير قبل الخروج
+window.addEventListener('beforeunload', (e) => {
+  if (currentScreen === 'study' || currentScreen === 'exam') {
+    e.preventDefault();
+    e.returnValue = '';
+  }
+});
+</script>
+
+</body>
+</html>
